@@ -56,6 +56,8 @@ class App extends React.Component {
                         hideGrid
                         catenaryColor="white"
                         brushColor="white"
+                        canvasWidth={200}
+                        canvasHeight={200}
                         brushRadius={10}
                     />
                 </div>

@@ -6,9 +6,13 @@ import axios from 'axios'
 
 class App extends React.Component {
     state = {
-        blob: null
+        blob: null,
+        loading: false,
+        number: null
     }
+
     download = async () => {
+        this.setState({ loading: true })
         let img = this.saveable.canvasContainer.children[1].toDataURL('image/jpeg')
         await fetch(img)
             .then(res => res.blob())
@@ -24,7 +28,7 @@ class App extends React.Component {
         data.append('data', file);
 
         axios.post(
-            `http://192.168.0.107:8000/api/search/check_number/`,
+            `http://192.168.0.113:8000/api/search/check_number/`,
             data,
             {
                 headers: {
@@ -32,17 +36,8 @@ class App extends React.Component {
                 },
             })
             .then(res => {
-                console.log(res)
+                this.setState({ loading: false, number: res.data[0] })
             });
-
-        // var a = document.createElement('a');
-        // var url = window.URL.createObjectURL(file);
-        // a.href = url;
-        // a.download = "teste";
-        // debugger
-        // a.click();
-        // window.URL.revokeObjectURL(url);
-
 
     }
 
@@ -64,26 +59,26 @@ class App extends React.Component {
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '50px' }}>
                     <button
                         style={{
-                            height: 60,
-                            width: 180,
+                            height: 40,
+                            width: 140,
                             borderRadius: 10,
                             backgroundColor: 'aqua',
-                            fontSize: 25
+                            fontSize: 20
                         }}
                         onClick={() => {
                             this.download()
                         }}
                     >
-                        Salvar
+                        Checar
           </button>
                     <div style={{ width: 50 }} />
                     <button
                         style={{
-                            height: 60,
-                            width: 180,
+                            height: 40,
+                            width: 140,
                             borderRadius: 10,
                             backgroundColor: 'aqua',
-                            fontSize: 25
+                            fontSize: 20
                         }}
                         onClick={() => {
                             this.saveable.clear();
@@ -92,6 +87,12 @@ class App extends React.Component {
                         Apagar
           </button>
                 </div>
+                {this.state.number == null ? null :
+                    <div style={{ display: 'flex', marginTop: '50px', justifyContent: 'center', alignItems: 'center' }}>
+                        <text>{'O numero é :'}</text>
+                        <text style={{ marginLeft: 10, fontSize: 25 }}>{this.state.number}</text>
+                    </div>
+                }
             </div >
         );
     }
